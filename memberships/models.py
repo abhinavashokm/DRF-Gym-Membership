@@ -17,3 +17,6 @@ class UserMembership(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.user.username + " - " + self.plan.name +  "  ( " + str(self.start_date) + " - " + str(self.end_date) + " )" 

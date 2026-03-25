@@ -1,10 +1,9 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
-from .serializers import CreateMembershipPlanSerializer, ListMembershipPlanSerializer
+from .serializers import CreateMembershipPlanSerializer, ListMembershipPlanSerializer, CheckUserMembershipSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from .models import MembershipPlan
+from .models import MembershipPlan, UserMembership
 
 class CreateMembershipPlanView(APIView):
     permission_classes = [AllowAny]
@@ -28,3 +27,13 @@ class ListMembershipPlansView(APIView):
         plans = MembershipPlan.objects.all()
         serializer = ListMembershipPlanSerializer(plans, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class CheckUserMembershipStatusView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, id):
+        userMembership = UserMembership.objects.get(id=id)
+        serializer = CheckUserMembershipSerializer(userMembership)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
