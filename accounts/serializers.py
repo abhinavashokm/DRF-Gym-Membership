@@ -16,3 +16,11 @@ class ListAccountsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'role']
+
+class LoginRequestSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+class LoginResponseSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    token = serializers.CharField()
