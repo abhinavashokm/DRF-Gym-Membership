@@ -6,7 +6,13 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'role']
+        fields = ['username', 'email', 'password']
 
     def create(self, validated_data):
+        validated_data['role'] = User.Role.MEMBER
         return User.objects.create_user(**validated_data)
+    
+class ListAccountsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'role']

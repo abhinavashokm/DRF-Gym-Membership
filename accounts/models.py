@@ -3,5 +3,8 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    Role_Choices = (("user", "User"), ("owner", "Gym Owner"))
-    role = models.CharField(max_length=10, choices=Role_Choices)
+    class Role(models.TextChoices):
+        MEMBER = "member", "Member"
+        OWNER = "owner", "Gym Owner"
+
+    role = models.CharField(max_length=10, choices=Role.choices, default=Role.MEMBER)
