@@ -12,7 +12,7 @@ class MembershipPlan(models.Model):
     
 
 class UserMembership(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     plan = models.ForeignKey(MembershipPlan, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()

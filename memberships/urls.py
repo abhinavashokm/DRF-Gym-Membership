@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import CreateMembershipPlanView, ListMembershipPlansView, CheckUserMembershipStatusView
+from .views import MembershipPlanView, UserMembershipStatusView
 
 urlpatterns = [
-    path('create/', CreateMembershipPlanView.as_view()),
-    path("list/", ListMembershipPlansView.as_view()),
-    path("check-status/<int:id>/", CheckUserMembershipStatusView.as_view())
+    path('create/', MembershipPlanView.as_view()),
+    path("list/", MembershipPlanView.as_view()),
+    path("status/", UserMembershipStatusView.as_view())
 ]

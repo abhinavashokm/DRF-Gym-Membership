@@ -14,16 +14,14 @@ class ListPaymentHistorySerializer(serializers.ModelSerializer):
 
 class CreatePaymentSerializer(serializers.Serializer):
     plan_id = serializers.IntegerField()
-    user_id = serializers.IntegerField()
 
     def validate(self, attrs):
         if not MembershipPlan.objects.filter(id=attrs["plan_id"]).exists():
             raise serializers.ValidationError("Given Plan does not exists!")
-
         return attrs
 
     def create(self, validated_data):
-        user = User.objects.get(id=validated_data["user_id"])
+        user = self.context['request'].user
         plan = MembershipPlan.objects.get(id=validated_data["plan_id"])
 
         payment = Payment.objects.create(

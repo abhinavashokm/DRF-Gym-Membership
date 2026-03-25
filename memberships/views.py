@@ -1,39 +1,32 @@
-from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from .serializers import CreateMembershipPlanSerializer, ListMembershipPlanSerializer, CheckUserMembershipSerializer
-from rest_framework.response import Response
-from rest_framework import status
 from .models import MembershipPlan, UserMembership
+from rest_framework.exceptions import NotFound
+from accounts.permissions import IsGymOwner
+from rest_framework.permissions import IsAuthenticated
 
-class CreateMembershipPlanView(APIView):
-    permission_classes = [AllowAny]
+class MembershipPlanView(ListCreateAPIView):
+    queryset = MembershipPlan.objects.all()
 
-    def post(self, request):
-        serializer = CreateMembershipPlanSerializer(data=request.data)
-
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer.save()
-        return Response(
-            {"message": "New Membership Plan Created Successfully!"},
-            status=status.HTTP_201_CREATED,
-        )
-
-class ListMembershipPlansView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        plans = MembershipPlan.objects.all()
-        serializer = ListMembershipPlanSerializer(plans, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return CreateMembershipPlanSerializer
+        return ListMembershipPlanSerializer
     
-class CheckUserMembershipStatusView(APIView):
-    permission_classes = [AllowAny]
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAuthenticated(), IsGymOwner()]
+        return [IsAuthenticated()]
+    
+class UserMembershipStatusView(RetrieveAPIView):
+    serializer_class = CheckUserMembershipSerializer
+    def get_object(self):
+        try:
+            return UserMembership.objects.get(user=self.request.user)
+        except UserMembership.DoesNotExist:
+            raise NotFound("Currently you don't have any membership in the Gym")
+    
 
-    def get(self, request, id):
-        userMembership = UserMembership.objects.get(id=id)
-        serializer = CheckUserMembershipSerializer(userMembership)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
     
 
